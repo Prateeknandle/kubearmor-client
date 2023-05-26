@@ -1,5 +1,10 @@
 project_name: karmor
 
+release:
+  github:
+    owner: Prateeknandle
+    name: kubearmor-client
+
 builds:
   - binary: karmor
     goos:
@@ -9,10 +14,9 @@ builds:
       - amd64
       - arm64
     ldflags: -w -s -X github.com/kubearmor/kubearmor-client/selfupdate.BuildDate={{.Date}} -X github.com/kubearmor/kubearmor-client/selfupdate.GitSummary={{.Version}}
-    flags:
-    - -mod=mod
     env:
       - CGO_ENABLED=0
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
 
 signs:
   - cmd: cosign
