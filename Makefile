@@ -8,7 +8,7 @@ ifeq (, $(shell which govvv))
 $(shell go install github.com/ahmetb/govvv@latest)
 endif
 
-PKG      := $(shell go list ./selfupdate)
+PKG      := $(shell go list -m./selfupdate)
 GIT_INFO := $(shell govvv -flags -pkg $(PKG))
 
 .PHONY: build
