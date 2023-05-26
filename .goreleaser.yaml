@@ -9,9 +9,11 @@ builds:
       - amd64
       - arm64
     ldflags: -w -s -X github.com/kubearmor/kubearmor-client/selfupdate.BuildDate={{.Date}} -X github.com/kubearmor/kubearmor-client/selfupdate.GitSummary={{.Version}}
+    flags:
+    - -mod=mod
     env:
       - CGO_ENABLED=0
-      
+
 signs:
   - cmd: cosign
     certificate: '${artifact}.cert'
