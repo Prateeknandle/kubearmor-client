@@ -24,6 +24,7 @@ import (
 	"github.com/kubearmor/kubearmor-client/probe"
 
 	v1 "k8s.io/api/apps/v1"
+	core "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -225,6 +226,15 @@ func K8sInstaller(c *k8s.Client, o Options) error {
 	}
 
 	var printYAML []interface{}
+
+	kubearmorNS := CreateKubearmorNamespace()
+	if o.Namespace == "kubearmor" {
+		if _, err := c.K8sClientset.CoreV1().Namespaces().Create(context.TODO(), kubearmorNS, metav1.CreateOptions{}); err != nil {
+			if !apierrors.IsAlreadyExists(err) {
+				return fmt.Errorf("failed to create Namesapce kubearmor: %+v", err)
+			}
+		}
+	}
 
 	kspCRD := CreateCustomResourceDefinition(kspName)
 	if !o.Save {
@@ -813,4 +823,12 @@ func writeToYAML(f *os.File, o interface{}) error {
 	}
 
 	return nil
+}
+
+func CreateKubearmorNamespace() *core.Namespace {
+	return &core.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "kubearmor",
+		},
+	}
 }
